@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+                 <style>
+        
+            #header {
+                background: #010A27;
+                width: 100%;
+                height: 120px;
+            }
+    
+            #left {
+                background: #010A27;
+                width: 88%;
+                height: 120px;
+                font-size: 10px;;
+                float: left
+            }
+    
+            #right {
+                color: white;
+                text-align: left;
+                font-size: 15px;
+                background:#010A27;
+                width: 12%;
+                height: 120px;
+                float: right
+            }
+    
+            html {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+    
+            #map {
+                width: 100%;
+                height: 84%;
+                padding: 0;
+                margin: 0;
+            }
+    
+            body {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+    
+            footer {
+                color: white;
+                text-align: center;
+                background: #010A27;
+                width: 100%;
+                height: 3%;
+            }
+    
+        </style>
+        <title>GEN.heritage TGIS project</title>
+    </head>
+    <header id="header">
+        <div id="left">
+            <br><a href="https://www.genheritage.net/" target = "_blank"><img src="images/logo.png" alt="GEN.heritage"></a>
+        </div>
+        <div id="right">
+            <p><br><br>Adminstrator : KIM dae Woon <br>Technician :  KIM sung tae</p>
+        </div>
+    </header>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/density_1.js"></script>
+        <script src="data/Riskindex_2.js"></script>
+        <script src="data/_3.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[33.79308349724923,125.33830329176601],[37.652743277066094,132.01778509895496]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        var layer_backgroundmap_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            opacity: 1.0,
+            attribution: '',
+        });
+        layer_backgroundmap_0;
+        map.addLayer(layer_backgroundmap_0);
+        function pop_density_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Join_Count</th>\
+                        <td>' + (feature.properties['Join_Count'] !== null ? Autolinker.link(String(feature.properties['Join_Count'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TARGET_FID'] !== null ? Autolinker.link(String(feature.properties['TARGET_FID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? Autolinker.link(String(feature.properties['OBJECTID'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_density_1_0(feature) {
+            if (feature.properties['Join_Count'] >= 0.000000 && feature.properties['Join_Count'] <= 3.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(26,150,65,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 3.000000 && feature.properties['Join_Count'] <= 8.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(88,180,83,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 8.000000 && feature.properties['Join_Count'] <= 13.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(151,210,101,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 13.000000 && feature.properties['Join_Count'] <= 19.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(196,230,135,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 19.000000 && feature.properties['Join_Count'] <= 27.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(236,247,173,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 27.000000 && feature.properties['Join_Count'] <= 36.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(255,237,171,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 36.000000 && feature.properties['Join_Count'] <= 47.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(254,201,129,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 47.000000 && feature.properties['Join_Count'] <= 60.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(249,158,89,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 60.000000 && feature.properties['Join_Count'] <= 110.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(232,91,58,1.0)',
+            }
+            }
+            if (feature.properties['Join_Count'] >= 110.000000 && feature.properties['Join_Count'] <= 241.000000 ) {
+                return {
+                pane: 'pane_density_1',
+                opacity: 1,
+                color: 'rgba(202,0,32,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 0.5,
+                fillColor: 'rgba(215,25,28,1.0)',
+            }
+            }
+        }
+        map.createPane('pane_density_1');
+        map.getPane('pane_density_1').style.zIndex = 401;
+        map.getPane('pane_density_1').style['mix-blend-mode'] = 'normal';
+        var layer_density_1 = new L.geoJson(json_density_1, {
+            attribution: '',
+            pane: 'pane_density_1',
+            onEachFeature: pop_density_1,
+            style: style_density_1_0,
+        });
+        bounds_group.addLayer(layer_density_1);
+        map.addLayer(layer_density_1);
+        function pop_Riskindex_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? Autolinker.link(String(feature.properties['OBJECTID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['no'] !== null ? Autolinker.link(String(feature.properties['no'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID_1'] !== null ? Autolinker.link(String(feature.properties['OBJECTID_1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['no_1'] !== null ? Autolinker.link(String(feature.properties['no_1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ZONE_CODE'] !== null ? Autolinker.link(String(feature.properties['ZONE_CODE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNT'] !== null ? Autolinker.link(String(feature.properties['COUNT'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA'] !== null ? Autolinker.link(String(feature.properties['AREA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">MEAN</th>\
+                        <td>' + (feature.properties['MEAN'] !== null ? Autolinker.link(String(feature.properties['MEAN'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Riskindex_2_0(feature) {
+            if (feature.properties['MEAN'] >= 2.753300 && feature.properties['MEAN'] <= 3.000000 ) {
+                return {
+                pane: 'pane_Riskindex_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 0.7,
+                fillColor: 'rgba(26,150,65,1.0)',
+            }
+            }
+            if (feature.properties['MEAN'] >= 3.000000 && feature.properties['MEAN'] <= 3.250000 ) {
+                return {
+                pane: 'pane_Riskindex_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 0.7,
+                fillColor: 'rgba(138,204,98,1.0)',
+            }
+            }
+            if (feature.properties['MEAN'] >= 3.250000 && feature.properties['MEAN'] <= 3.500000 ) {
+                return {
+                pane: 'pane_Riskindex_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 0.7,
+                fillColor: 'rgba(220,240,158,1.0)',
+            }
+            }
+            if (feature.properties['MEAN'] >= 3.500000 && feature.properties['MEAN'] <= 3.750000 ) {
+                return {
+                pane: 'pane_Riskindex_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 0.7,
+                fillColor: 'rgba(255,223,154,1.0)',
+            }
+            }
+            if (feature.properties['MEAN'] >= 3.750000 && feature.properties['MEAN'] <= 4.000000 ) {
+                return {
+                pane: 'pane_Riskindex_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 0.7,
+                fillColor: 'rgba(246,144,83,1.0)',
+            }
+            }
+            if (feature.properties['MEAN'] >= 4.000000 && feature.properties['MEAN'] <= 4.064219 ) {
+                return {
+                pane: 'pane_Riskindex_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 0.7,
+                fillColor: 'rgba(215,25,28,1.0)',
+            }
+            }
+        }
+        map.createPane('pane_Riskindex_2');
+        map.getPane('pane_Riskindex_2').style.zIndex = 402;
+        map.getPane('pane_Riskindex_2').style['mix-blend-mode'] = 'normal';
+        var layer_Riskindex_2 = new L.geoJson(json_Riskindex_2, {
+            attribution: '',
+            pane: 'pane_Riskindex_2',
+            onEachFeature: pop_Riskindex_2,
+            style: style_Riskindex_2_0,
+        });
+        bounds_group.addLayer(layer_Riskindex_2);
+        map.addLayer(layer_Riskindex_2);
+        function pop__3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">연번</th>\
+                        <td>' + (feature.properties['연번'] !== null ? Autolinker.link(String(feature.properties['연번'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">종목</th>\
+                        <td>' + (feature.properties['종목'] !== null ? Autolinker.link(String(feature.properties['종목'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">명칭</th>\
+                        <td>' + (feature.properties['명칭'] !== null ? Autolinker.link(String(feature.properties['명칭'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">명칭(한자)</th>\
+                        <td>' + (feature.properties['명칭(한자)'] !== null ? Autolinker.link(String(feature.properties['명칭(한자)'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">소재지</th>\
+                        <td>' + (feature.properties['소재지'] !== null ? Autolinker.link(String(feature.properties['소재지'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">지정일</th>\
+                        <td>' + (feature.properties['지정일'] !== null ? Autolinker.link(String(feature.properties['지정일'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">지정번호</th>\
+                        <td>' + (feature.properties['지정번호'] !== null ? Autolinker.link(String(feature.properties['지정번호'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style__3_0(feature) {
+            switch(String(feature.properties['종목'])) {
+                case '국보':
+                    return {
+                pane: 'pane__3',
+                radius: 8.000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+            }
+                    break;
+                case '보물':
+                    return {
+                pane: 'pane__3',
+                radius: 8.000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(187,226,217,1.0)',
+            }
+                    break;
+                case '사적':
+                    return {
+                pane: 'pane__3',
+                radius: 8.000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,155,111,1.0)',
+            }
+                    break;
+                case '사적및명승':
+                    return {
+                pane: 'pane__3',
+                radius: 8.000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+            }
+                    break;
+                case '중요민속문화재':
+                    return {
+                pane: 'pane__3',
+                radius: 8.000000000000004,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+            }
+                    break;
+            }
+        }
+        map.createPane('pane__3');
+        map.getPane('pane__3').style.zIndex = 403;
+        map.getPane('pane__3').style['mix-blend-mode'] = 'normal';
+        var layer__3 = new L.geoJson(json__3, {
+            attribution: '',
+            pane: 'pane__3',
+            onEachFeature: pop__3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style__3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer__3);
+        map.addLayer(layer__3);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'국가지정문화재 (목조건축물)<br /><table><tr><td style="text-align: center;"><img src="legend/_3_국보0.png" /></td><td>국보</td></tr><tr><td style="text-align: center;"><img src="legend/_3_보물1.png" /></td><td>보물</td></tr><tr><td style="text-align: center;"><img src="legend/_3_사적2.png" /></td><td>사적</td></tr><tr><td style="text-align: center;"><img src="legend/_3_사적및명승3.png" /></td><td>사적및명승</td></tr><tr><td style="text-align: center;"><img src="legend/_3_중요민속문화재4.png" /></td><td>중요민속문화재</td></tr><tr><td style="text-align: center;">  </td><td>  </td></tr><tr><td style="text-align: center;">  </td><td>  </td></tr></table>': layer__3,'목조문화재 흰개미 가해위험지수<br /><table><tr><td style="text-align: center;"><img src="legend/Riskindex_2_27533000.png" /></td><td>2.753 - 3.00</td></tr><tr><td style="text-align: center;"><img src="legend/Riskindex_2_3003251.png" /></td><td>3.00 - 3.25</td></tr><tr><td style="text-align: center;"><img src="legend/Riskindex_2_3253502.png" /></td><td>3.25 - 3.50</td></tr><tr><td style="text-align: center;"><img src="legend/Riskindex_2_3503753.png" /></td><td>3.50 - 3.75</td></tr><tr><td style="text-align: center;"><img src="legend/Riskindex_2_3754004.png" /></td><td>3.75 - 4.00</td></tr><tr><td style="text-align: center;"><img src="legend/Riskindex_2_40040645.png" /></td><td>4.00 - 4.064 </td></tr><tr><td style="text-align: center;">  </td><td>  </td></tr><tr><td style="text-align: center;">  </td><td>  </td></tr></table>': layer_Riskindex_2,' 지자체별 목조건축물 수량<br /><table><tr><td style="text-align: center;"><img src="legend/density_1_030.png" /></td><td> 0 - 3 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_381.png" /></td><td> 3 - 8 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_8132.png" /></td><td> 8 - 13 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_13193.png" /></td><td> 13 - 19 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_19274.png" /></td><td> 19 - 27 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_27365.png" /></td><td> 27 - 36 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_36476.png" /></td><td> 36 - 47 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_47607.png" /></td><td> 47 - 60 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_601108.png" /></td><td> 60 - 110 </td></tr><tr><td style="text-align: center;"><img src="legend/density_1_1102419.png" /></td><td> 110 - 241 </td></tr><tr><td style="text-align: center;">  </td><td>  </td></tr><tr><td style="text-align: center;">  </td><td>  </td></tr></table>': layer_density_1,"배경지도": layer_backgroundmap_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer__3,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: '명칭'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
+<footer>© 2019 by GEN.heritage, Pathobiology Lab. for Cultural Heritage</footer>
+</html>
